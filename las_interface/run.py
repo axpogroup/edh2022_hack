@@ -8,8 +8,9 @@ import numpy as np
 import pylas
 from os import path
 
-las_dir: str = '/Users/matthiasburger/git/edh2022_hack/data'
+las_dir: str = '/Users/matthiasburger/git/data'
 
 
 with pylas.open(path.join(las_dir, '2662_1217.las')) as file:
     line = file.read()
+    print(line.points_data.array)
