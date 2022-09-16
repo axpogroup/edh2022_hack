@@ -1,3 +1,0 @@
-pylas==0.4.3
-laspy
-liblas
