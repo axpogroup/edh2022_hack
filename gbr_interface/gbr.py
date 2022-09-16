@@ -18,6 +18,7 @@ for building in input['results']:
     elif attr['gklas'] in [1271, 1276, 1277, 1278]:
         buildingtype = 'agriculture'
 
+    gbr_url = f'https://map.geo.admin.ch/?ch.bfs.gebaeude_wohnungs_register={attr["egid"]}_0&time=None&lang=de&topic=ech'
     el = {
         'egid': attr['egid'],
         'street': attr['strname_deinr'],
@@ -30,7 +31,8 @@ for building in input['results']:
         'coordinate_lat': attr['gkode'],
         'coordinate_lon': attr['gkodn'],
         'area': attr['garea'],
-        'volume': attr['gvol']
+        'volume': attr['gvol'],
+        'url':gbr_url
     }
     output.append(el)
 
