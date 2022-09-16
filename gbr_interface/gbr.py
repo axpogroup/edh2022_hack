@@ -18,7 +18,20 @@ for building in input['results']:
     elif attr['gklas'] in [1271, 1276, 1277, 1278]:
         buildingtype = 'agriculture'
 
-    el = {'egid': attr['egid'], 'street': attr['strname_deinr'], 'zip': attr['dplz4'], 'city': attr['ggdename'], 'description': attr['gbez'], 'buildingtype': buildingtype, 'gkat': attr['gkat'], 'gklas': attr['gklas']}
+    el = {
+        'egid': attr['egid'],
+        'street': attr['strname_deinr'],
+        'zip': attr['dplz4'],
+        'city': attr['ggdename'],
+        'description': attr['gbez'],
+        'buildingtype': buildingtype,
+        'gkat': attr['gkat'],
+        'gklas': attr['gklas'],
+        'coordinate_lat': attr['gkode'],
+        'coordinate_lon': attr['gkodn'],
+        'area': attr['garea'],
+        'volume': attr['gvol']
+    }
     output.append(el)
 
 
