@@ -15,6 +15,7 @@ class BuildingTypeExtended(enum.Enum):
     But it might be mapped to the GBRBuildingType
     later.
     """
+
     pass
 
 
