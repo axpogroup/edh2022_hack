@@ -4,6 +4,7 @@ liblas
 Shapely==1.8.4
 plotly
 scipy
+pdal # brew install pdal
 
 
 # dev
