@@ -64,13 +64,21 @@ class GBRDataFetcher:
         output = []
         offset = 0
         while True:
-            building_list_data = requests.get(
-                self._get_buildings_list_url(
-                    north_west_coords=north_west_coords, south_east_coords=south_east_coords, offset=offset
+            try:
+                r = requests.get(
+                    self._get_buildings_list_url(
+                        north_west_coords=north_west_coords, south_east_coords=south_east_coords, offset=offset
+                    )
                 )
-            ).json()
+                r.raise_for_status()
+            except requests.exceptions.HTTPError as err:
+                raise SystemExit(err)
+            building_list_data = r.json()
+            loaded_egid = list(map(lambda el: el.egid, output))
             for building in building_list_data["results"]:
                 attr = building["attributes"]
+                if attr["egid"] in loaded_egid:
+                    continue
                 building_type = classifier.classify(
                     gbr_category=attr["gkat"], gbr_class=attr["gklas"]
                 )
@@ -91,7 +99,7 @@ class GBRDataFetcher:
                     url=self._get_building_url(egid=attr["egid"]),
                 )
                 output.append(building_data)
-            offset += len(building_list_data["results"])
+            offset += 50
             if len(building_list_data["results"]) == 0:
                 break
         return output
