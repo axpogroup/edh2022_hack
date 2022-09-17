@@ -1,7 +1,7 @@
 import pylas
 from os import path
 
-las_dir: str = '../data'
+las_dir: str = "../data"
 
 
 dimension_dictionary = dict()
