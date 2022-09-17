@@ -1,7 +1,7 @@
 import csv
 import building_classifier
 import gbr_interface
-
+from dxf import dxf_metrics_computation
 
 def main():
     north_west = (2655000.034938044, 1217999.989094743)
@@ -19,6 +19,10 @@ def main():
         )
         writer.writeheader()
         writer.writerows([building_data.dict() for building_data in output])
+
+    dxf_filenames = ["data/SWISSBUILDINGS3D_2_0_CHLV95LN02_1150-11.dxf",
+                     "data/SWISSBUILDINGS3D_2_0_CHLV95LN02_1150-12.dxf"]
+    dxf_metrics_computation.computeAll(dxf_filenames, "volume_and_locations.csv")
 
 
 if __name__ == "__main__":
