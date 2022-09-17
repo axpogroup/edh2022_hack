@@ -24,10 +24,21 @@ def getGroundCenter(gdf):
     bb = gdf["bounding_box"]
     return [(bb[1][0]+bb[0][0])*1/2, (bb[1][1]+bb[0][1])*1/2, gdf["z_ground"]]
 
+def getGroundPolygon(gdf):
+    geom = gdf["geometry"]
+    groundPoly  = []
+    for poly in geom.geoms:
+        isGrounded = [v[2] == gdf["z_ground"] for v in poly.exterior.coords]
+        if isGrounded:
+            groundPoly.append(poly)
+    return groundPoly
+
+
 def computeMetrics(gdf):
     gdf["points"] = gdf.apply(getPoints, axis=1)
     gdf["volume"] = gdf.apply(computeVolumeHull, axis=1)
     gdf["z_ground"] = gdf.apply(getGround, axis=1)
     gdf["bounding_box"] = gdf.apply(getBoundingBox, axis=1)
+    gdf["ground_polygons"] = gdf.apply(getGroundPolygon, axis=1)
     gdf["ground_center"] = gdf.apply(getGroundCenter, axis=1)
     return gdf
