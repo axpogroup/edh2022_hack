@@ -2,7 +2,7 @@ from scipy.spatial import ConvexHull
 
 def getPoints(gdf):
     geom = gdf["geometry"]
-    return [v for g in geom for v in g.exterior.coords]
+    return [v for g in geom.geoms for v in g.exterior.coords]
 
 def computeVolumeHull(gdf):
     hull = ConvexHull(gdf["points"])
