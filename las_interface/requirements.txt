@@ -4,3 +4,8 @@ liblas
 Shapely==1.8.4
 plotly
 scipy
+
+
+# dev
+flake8
+black
