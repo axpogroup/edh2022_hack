@@ -9,6 +9,7 @@ class GBRBuildingData(pydantic.BaseModel):
     egid: Optional[str]
     gkat: Optional[int]
     gklas: Optional[int]
+    status: Optional[str]
     street: Optional[str]
     zip: Optional[str]
     city: Optional[str]
@@ -51,6 +52,14 @@ class GBRDataFetcher:
         return url
 
     @staticmethod
+    def _get_building_status(gstat: int) -> str:
+        building_status = {1001: 'Project', 1003: 'In construction', 1004: 'Existing', 1005: 'Aborted'}
+        if gstat in building_status:
+            return building_status[gstat]
+        else:
+            return 'unknown'
+
+    @staticmethod
     def _get_building_url(egid: int) -> str:
         url = f"https://map.geo.admin.ch/?ch.bfs.gebaeude_wohnungs_register={egid}_0&time=None&lang=de&topic=ech"
         return url
@@ -64,19 +73,28 @@ class GBRDataFetcher:
         output = []
         offset = 0
         while True:
-            building_list_data = requests.get(
-                self._get_buildings_list_url(
-                    north_west_coords=north_west_coords, south_east_coords=south_east_coords, offset=offset
+            try:
+                r = requests.get(
+                    self._get_buildings_list_url(
+                        north_west_coords=north_west_coords, south_east_coords=south_east_coords, offset=offset
+                    )
                 )
-            ).json()
+                r.raise_for_status()
+            except requests.exceptions.HTTPError as err:
+                raise SystemExit(err)
+            building_list_data = r.json()
+            loaded_egid = list(map(lambda el: el.egid, output))
             for building in building_list_data["results"]:
                 attr = building["attributes"]
+                if attr["egid"] in loaded_egid:
+                    continue
                 building_type = classifier.classify(
                     gbr_category=attr["gkat"], gbr_class=attr["gklas"]
                 )
 
                 building_data = GBRBuildingData(
                     egid=attr["egid"],
+                    status=self._get_building_status(gstat=attr["gstat"]),
                     street=attr["strname_deinr"],
                     zip=attr["dplz4"],
                     city=attr["ggdename"],
@@ -91,7 +109,7 @@ class GBRDataFetcher:
                     url=self._get_building_url(egid=attr["egid"]),
                 )
                 output.append(building_data)
-            offset += len(building_list_data["results"])
+            offset += 50
             if len(building_list_data["results"]) == 0:
                 break
         return output
