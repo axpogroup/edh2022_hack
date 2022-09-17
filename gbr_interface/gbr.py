@@ -9,6 +9,7 @@ class GBRBuildingData(pydantic.BaseModel):
     egid: Optional[str]
     gkat: Optional[int]
     gklas: Optional[int]
+    status: Optional[str]
     street: Optional[str]
     zip: Optional[str]
     city: Optional[str]
@@ -51,6 +52,14 @@ class GBRDataFetcher:
         return url
 
     @staticmethod
+    def _get_building_status(gstat: int) -> str:
+        building_status = {1001: 'Project', 1003: 'In construction', 1004: 'Existing', 1005: 'Aborted'}
+        if gstat in building_status:
+            return building_status[gstat]
+        else:
+            return 'unknown'
+
+    @staticmethod
     def _get_building_url(egid: int) -> str:
         url = f"https://map.geo.admin.ch/?ch.bfs.gebaeude_wohnungs_register={egid}_0&time=None&lang=de&topic=ech"
         return url
@@ -85,6 +94,7 @@ class GBRDataFetcher:
 
                 building_data = GBRBuildingData(
                     egid=attr["egid"],
+                    status=self._get_building_status(gstat=attr["gstat"]),
                     street=attr["strname_deinr"],
                     zip=attr["dplz4"],
                     city=attr["ggdename"],
