@@ -4,8 +4,8 @@ import gbr_interface
 
 
 def main():
-    north_west = (655000, 218235)
-    south_east = (663400, 214855)
+    north_west = (2655000, 1218235)
+    south_east = (2663400, 1214855)
 
     output = gbr_interface.GBRDataFetcher().request_data(
         north_west_coords=north_west,

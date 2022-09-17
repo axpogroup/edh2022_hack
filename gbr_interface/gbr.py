@@ -43,6 +43,7 @@ class GBRDataFetcher:
             f"geometry={north_west_coords[0]},{north_west_coords[1]},"
             f"{south_east_coords[0]},{south_east_coords[1]}&"
             f"tolerance=0&"
+            f"sr=2056&"
             f"layers=all:ch.bfs.gebaeude_wohnungs_register&returnGeometry=false"
         )
         return url
